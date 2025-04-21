@@ -26,8 +26,10 @@ app.use(session({
 }));
 
 const authRoutes = require('./routes/auth.routes');
+const usuariosRoutes = require('./routes/usuarios.routes');
 
 app.use('/api/auth', authRoutes);
+app.use('/api/usuarios', usuariosRoutes);
 
 
 // Iniciar servidor
