@@ -1,7 +1,7 @@
 const bcrypt = require("bcryptjs");
 const connection = require("../db/connection");
 
-exports.getEmpleados = async (req, res) => {
+exports.getAllEmpleados = async (req, res) => {
     try {
         const [rows] = await connection.query(
             `SELECT u.id, u.nombre, u.apellido, u.correo, u.numero, u.contrasena_hash, 
@@ -30,7 +30,7 @@ exports.getEmpleados = async (req, res) => {
     }
 };
 
-exports.getClientes = async (req, res) => {
+exports.getAllClientes = async (req, res) => {
     try {
         const [rows] = await connection.query(
             `SELECT u.id, u.nombre, u.apellido, u.correo, u.numero, u.contrasena_hash, 
