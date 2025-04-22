@@ -28,10 +28,12 @@ app.use(session({
 const authRoutes = require('./routes/auth.routes');
 const usuariosRoutes = require('./routes/usuarios.routes');
 const serviciosRoutes = require('./routes/servicios.routes');
+const mascotasRoutes = require('./routes/mascotas.routes');
 
 app.use('/api/auth', authRoutes);
 app.use('/api/usuarios', usuariosRoutes);
 app.use('/api/servicios', serviciosRoutes);
+app.use('/api/mascotas', mascotasRoutes);
 
 
 // Iniciar servidor
