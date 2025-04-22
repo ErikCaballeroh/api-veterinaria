@@ -11,6 +11,7 @@ exports.getAllMascotas = async (req, res) => {
         const mascotas = rows.map(mascota => ({
             id: mascota.id,
             usuario_id: mascota.usuario_id,
+            nombre: mascota.nombre,
             especie: {
                 id: mascota.especie_id,
                 nombre: mascota.especie_nombre,
@@ -39,6 +40,7 @@ exports.getMascotaById = async (req, res) => {
         const mascotas = rows.map(mascota => ({
             id: mascota.id,
             usuario_id: mascota.usuario_id,
+            nombre: mascota.nombre,
             especie: {
                 id: mascota.especie_id,
                 nombre: mascota.especie_nombre,
@@ -72,6 +74,7 @@ exports.createMascota = async (req, res) => {
 }
 
 exports.updateMascota = async (req, res) => {
+    const { id } = req.params;
     const { usuario_id, nombre, especie_id, fecha_nacimiento } = req.body;
     if (!usuario_id || !nombre || !especie_id || !fecha_nacimiento) {
         return res.status(400).json({ message: 'Datos incompletos' });
@@ -79,8 +82,8 @@ exports.updateMascota = async (req, res) => {
 
     try {
         const [result] = await connection.query(`
-            UPDATE  mascotas SET usuario_id = ?, nombre = ?, especie_id = ?, fecha_nacimiento = ?
-        `, [usuario_id, nombre, especie_id, fecha_nacimiento]);
+            UPDATE  mascotas SET usuario_id = ?, nombre = ?, especie_id = ?, fecha_nacimiento = ? WHERE id = ?
+        `, [usuario_id, nombre, especie_id, fecha_nacimiento, id]);
 
         if (result.affectedRows === 0) {
             return res.status(404).json({ message: 'Registro no encontrado' });
