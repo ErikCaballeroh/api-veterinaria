@@ -31,6 +31,7 @@ const serviciosRoutes = require('./routes/servicios.routes');
 const mascotasRoutes = require('./routes/mascotas.routes');
 const especiesRoutes = require('./routes/especies.routes');
 const categoriasRoutes = require('./routes/categorias.routes');
+const consultasRoutes = require('./routes/consultas.routes');
 
 app.use('/api/auth', authRoutes);
 app.use('/api/usuarios', usuariosRoutes);
@@ -38,6 +39,7 @@ app.use('/api/servicios', serviciosRoutes);
 app.use('/api/mascotas', mascotasRoutes);
 app.use('/api/especies', especiesRoutes);
 app.use('/api/categorias', categoriasRoutes);
+app.use('/api/consultas', consultasRoutes);
 
 
 // Iniciar servidor
