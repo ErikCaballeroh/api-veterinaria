@@ -80,15 +80,6 @@ CREATE TABLE `citas` (
     FOREIGN KEY (`servicio_id`) REFERENCES `servicios`(`id`) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
--- Tabla cartillas
-CREATE TABLE `cartillas` (
-    `usuario_id` BIGINT NOT NULL,
-    `mascota_id` BIGINT NOT NULL,
-    PRIMARY KEY (`usuario_id`, `mascota_id`),
-    FOREIGN KEY (`usuario_id`) REFERENCES `usuarios`(`id`) ON DELETE CASCADE ON UPDATE RESTRICT,
-    FOREIGN KEY (`mascota_id`) REFERENCES `mascotas`(`id`) ON DELETE CASCADE ON UPDATE RESTRICT
-) ENGINE=InnoDB;
-
 -- Insertar datos iniciales
 
 -- Roles
@@ -107,11 +98,11 @@ INSERT INTO especies (nombre) VALUES
 
 -- Usuarios
 INSERT INTO usuarios (nombre, apellido, correo, numero, contrasena_hash, rol_id) VALUES
-('Ana', 'Pérez', 'ana.perez@example.com', '8112345678', 'hash1', 4),
-('Carlos', 'Ramírez', 'carlos.ramirez@example.com', '8212345678', 'hash2', 4),
-('Laura', 'González', 'laura.gonzalez@example.com', '8312345678', 'hash3', 2),
-('María', 'López', 'maria.lopez@example.com', '8412345678', 'hash4', 3),
-('Admin', 'General', 'admin@example.com', '8512345678', 'hash5', 1);
+('Ana', 'Pérez', 'ana.perez@example.com', '8112345678', '$2b$10$yhI5JavtTrn0Bh4ViNkJrueCO/l9UT0YwcFdFBg6YGOFJemvTS5E6', 4),
+('Carlos', 'Ramírez', 'carlos.ramirez@example.com', '8212345678', '$2b$10$yhI5JavtTrn0Bh4ViNkJrueCO/l9UT0YwcFdFBg6YGOFJemvTS5E6', 4),
+('Laura', 'González', 'laura.gonzalez@example.com', '8312345678', '$2b$10$yhI5JavtTrn0Bh4ViNkJrueCO/l9UT0YwcFdFBg6YGOFJemvTS5E6', 2),
+('María', 'López', 'maria.lopez@example.com', '8412345678', '$2b$10$yhI5JavtTrn0Bh4ViNkJrueCO/l9UT0YwcFdFBg6YGOFJemvTS5E6', 3),
+('Admin', 'General', 'admin@example.com', '8512345678', '$2b$10$yhI5JavtTrn0Bh4ViNkJrueCO/l9UT0YwcFdFBg6YGOFJemvTS5E6', 1);
 
 -- Mascotas
 INSERT INTO mascotas (usuario_id, nombre, especie_id, sexo, fecha_nacimiento) VALUES
@@ -145,10 +136,3 @@ INSERT INTO consultas (usuario_id, mascota_id, nota, fecha_hora, servicio_id) VA
 (1, 1, 'Revisión general, sin anomalías detectadas.', '2025-04-22 10:30:00', 1),
 (1, 2, 'Aplicación de vacuna antirrábica. Todo bien.', '2025-04-23 11:30:00', 2),
 (2, 3, 'Recomendado baño medicado por sarna.', '2025-04-24 10:00:00', 3);
-
--- Cartillas
-INSERT INTO cartillas (usuario_id, mascota_id) VALUES
-(1, 1),
-(1, 2),
-(2, 3),
-(2, 4);
