@@ -34,6 +34,7 @@ const categoriasRoutes = require('./routes/categorias.routes');
 const consultasRoutes = require('./routes/consultas.routes');
 const citasRoutes = require('./routes/citas.routes');
 const cartillasRoutes = require('./routes/cartillas.routes');
+const usuarioCitasRoutes = require('./routes/usuarioCitas.routes');
 
 const {
     auth,
@@ -49,6 +50,7 @@ app.use('/api/categorias', categoriasRoutes);
 app.use('/api/consultas', consultasRoutes);
 app.use('/api/citas', citasRoutes);
 app.use('/api/me/cartillas', auth, cartillasRoutes);
+app.use('/api/me/', auth, usuarioCitasRoutes);
 
 
 // Iniciar servidor

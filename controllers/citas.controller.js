@@ -20,6 +20,16 @@ exports.getCitaById = async (req, res) => {
     }
 }
 
+exports.getAllCitasByUsuario = async (req, res) => {
+    const { user } = req.session;
+
+    try {
+        const [rows] = await connection.query('SELECT * FROM citas WHERE usuario_id = ?', [user.id]);
+        res.json(rows);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+}
 
 exports.createCita = async (req, res) => {
     const { usuario_id, mascota_id, fecha_hora, servicio_id } = req.body;
