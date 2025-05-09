@@ -24,7 +24,15 @@ exports.getAllCitasByUsuario = async (req, res) => {
     const { user } = req.session;
 
     try {
-        const [rows] = await connection.query('SELECT * FROM citas WHERE usuario_id = ?', [user.id]);
+        const [rows] = await connection.query(`
+            SELECT c.id, c.fecha_hora, 
+                   JSON_OBJECT('id', m.id, 'nombre', m.nombre) AS mascota,
+                   JSON_OBJECT('id', s.id, 'nombre', s.nombre) AS servicio
+            FROM citas c
+            JOIN mascotas m ON c.mascota_id = m.id
+            JOIN servicios s ON c.servicio_id = s.id
+            WHERE c.usuario_id = ?`, [user.id]
+        );
         res.json(rows);
     } catch (err) {
         res.status(500).json({ error: err.message });
