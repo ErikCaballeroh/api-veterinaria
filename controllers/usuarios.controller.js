@@ -93,17 +93,22 @@ exports.getUsuarioById = async (req, res) => {
 exports.updateUsuario = async (req, res) => {
     const { id } = req.params;
     const { nombre, apellido, correo, numero, contrasena } = req.body;
-    if (!nombre || !apellido || !correo || !numero || !contrasena) {
+    if (!nombre || !apellido || !correo || !numero) {
         return res.status(400).json({ message: 'Datos incompletos' });
     }
 
     try {
-        const contrasenaHash = await bcrypt.hash(contrasena, 10);
+        let query, params;
+        if (contrasena) {
+            const contrasenaHash = await bcrypt.hash(contrasena, 10);
+            query = 'UPDATE usuarios SET nombre = ?, apellido = ?, correo = ?, numero = ?, contrasena_hash = ? WHERE id = ?';
+            params = [nombre, apellido, correo, numero, contrasenaHash, id];
+        } else {
+            query = 'UPDATE usuarios SET nombre = ?, apellido = ?, correo = ?, numero = ? WHERE id = ?';
+            params = [nombre, apellido, correo, numero, id];
+        }
 
-        const [result] = await connection.query(
-            'UPDATE usuarios SET nombre = ?, apellido = ?, correo = ?, numero = ?, contrasena_hash = ? WHERE id = ?',
-            [nombre, apellido, correo, numero, contrasenaHash, id]
-        );
+        const [result] = await connection.query(query, params);
 
         if (result.affectedRows === 0) {
             return res.status(404).json({ message: 'Usuario no encontrado' });
