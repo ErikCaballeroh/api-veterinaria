@@ -126,3 +126,25 @@ exports.deleteUsuario = async (req, res) => {
         res.status(500).json({ error: err.message });
     }
 }
+
+exports.convertirUsuarioEnEmpleado = async (req, res) => {
+    const { id } = req.params;
+    const { rol_id } = req.body;
+    // Validar que el rol_id sea válido (1, 2 o 3)
+    // 1: Administrador, 2: Veterinario, 3: Recepcionista
+    if (![1, 2, 3].includes(Number(rol_id))) {
+        return res.status(400).json({ message: 'rol_id inválido. Debe ser 1 (Administrador), 2 (Veterinario) o 3 (Recepcionista).' });
+    }
+    try {
+        const [result] = await connection.query(
+            'UPDATE usuarios SET rol_id = ? WHERE id = ?',
+            [rol_id, id]
+        );
+        if (result.affectedRows === 0) {
+            return res.status(404).json({ message: 'Usuario no encontrado' });
+        }
+        res.json({ message: 'Rol de usuario actualizado correctamente' });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+}

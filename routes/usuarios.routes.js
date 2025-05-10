@@ -6,7 +6,8 @@ const router = express.Router();
 router.get('/empleados', usuariosController.getAllEmpleados);
 router.get('/clientes', usuariosController.getAllClientes);
 router.get('/:id', usuariosController.getUsuarioById);
-router.post('/:id', usuariosController.updateUsuario);
+router.put('/empleados/:id', usuariosController.convertirUsuarioEnEmpleado);
+router.put('/:id', usuariosController.updateUsuario);
 router.delete('/:id', usuariosController.deleteUsuario);
 
 module.exports = router;
