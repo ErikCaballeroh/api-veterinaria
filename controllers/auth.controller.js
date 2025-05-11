@@ -39,7 +39,7 @@ exports.login = async (req, res) => {
                 r.id as rol_id,
                 r.nombre as rol_nombre
             FROM usuarios u
-            LEFT JOIN roles r ON u.id = r.id
+            LEFT JOIN roles r ON u.rol_id = r.id
             WHERE u.correo = ?
         `, [correo]);
 

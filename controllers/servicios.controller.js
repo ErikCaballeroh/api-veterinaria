@@ -2,8 +2,21 @@ const connection = require('../db/connection');
 
 exports.getAllServicios = async (req, res) => {
     try {
-        const [rows] = await connection.query('SELECT * FROM servicios');
-        res.json(rows);
+        const [rows] = await connection.query(`
+            SELECT s.id, s.nombre, s.precio, c.id AS categoria_id, c.nombre AS categoria_nombre
+            FROM servicios s
+            JOIN categorias c ON s.categoria_id = c.id
+        `);
+        const servicios = rows.map(row => ({
+            id: row.id,
+            nombre: row.nombre,
+            precio: row.precio,
+            categoria: {
+                id: row.categoria_id,
+                nombre: row.categoria_nombre
+            }
+        }));
+        res.json(servicios);
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
@@ -11,14 +24,28 @@ exports.getAllServicios = async (req, res) => {
 
 exports.getServicioById = async (req, res) => {
     const { id } = req.params;
-
     try {
-        const [rows] = await connection.query('SELECT * FROM servicios WHERE id = ?', [id]);
+        const [rows] = await connection.query(`
+            SELECT s.id, s.nombre, s.precio, c.id AS categoria_id, c.nombre AS categoria_nombre
+            FROM servicios s
+            JOIN categorias c ON s.categoria_id = c.id
+            WHERE s.id = ?
+        `, [id]);
         if (rows.length === 0) {
             return res.status(404).json({ message: 'Registro no encontrado' });
         }
-        res.json(rows[0]);
-    } catch (error) {
+        const row = rows[0];
+        const servicio = {
+            id: row.id,
+            nombre: row.nombre,
+            precio: row.precio,
+            categoria: {
+                id: row.categoria_id,
+                nombre: row.categoria_nombre
+            }
+        };
+        res.json(servicio);
+    } catch (err) {
         res.status(500).json({ error: err.message });
     }
 }
