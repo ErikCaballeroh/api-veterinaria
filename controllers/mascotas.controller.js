@@ -3,14 +3,18 @@ const connection = require("../db/connection");
 exports.getAllMascotas = async (req, res) => {
     try {
         const [rows] = await connection.query(`
-            SELECT m.*, e.id AS especie_id, e.nombre AS especie_nombre  
+            SELECT m.*, e.id AS especie_id, e.nombre AS especie_nombre, u.id AS usuario_id, u.nombre AS usuario_nombre
             FROM mascotas m
             LEFT JOIN especies e ON m.especie_id = e.id
+            LEFT JOIN usuarios u ON m.usuario_id = u.id
         `);
 
         const mascotas = rows.map(mascota => ({
             id: mascota.id,
-            usuario_id: mascota.usuario_id,
+            usuario: {
+                id: mascota.usuario_id,
+                nombre: mascota.usuario_nombre,
+            },
             nombre: mascota.nombre,
             especie: {
                 id: mascota.especie_id,
@@ -31,15 +35,19 @@ exports.getMascotaById = async (req, res) => {
 
     try {
         const [rows] = await connection.query(`
-            SELECT m.*, e.id AS especie_id, e.nombre AS especie_nombre  
+            SELECT m.*, e.id AS especie_id, e.nombre AS especie_nombre, u.id AS usuario_id, u.nombre AS usuario_nombre
             FROM mascotas m
             LEFT JOIN especies e ON m.especie_id = e.id
+            LEFT JOIN usuarios u ON m.usuario_id = u.id
             WHERE m.id = ?
         `, [id]);
 
         const mascotas = rows.map(mascota => ({
             id: mascota.id,
-            usuario_id: mascota.usuario_id,
+            usuario: {
+                id: mascota.usuario_id,
+                nombre: mascota.usuario_nombre,
+            },
             nombre: mascota.nombre,
             especie: {
                 id: mascota.especie_id,
@@ -56,18 +64,21 @@ exports.getMascotaById = async (req, res) => {
 }
 
 exports.createMascota = async (req, res) => {
-    const { usuario_id, nombre, especie_id, fecha_nacimiento } = req.body;
-    if (!usuario_id || !nombre || !especie_id || !fecha_nacimiento) {
+    const { usuario_id, nombre, especie_id, fecha_nacimiento, sexo } = req.body;
+    if (!usuario_id || !nombre || !especie_id || !fecha_nacimiento || !sexo) {
         return res.status(400).json({ message: 'Datos incompletos' });
+    }
+    if (sexo !== 'Macho' && sexo !== 'Hembra') {
+        return res.status(400).json({ message: 'Sexo inválido, debe ser "Macho" o "Hembra"' });
     }
 
     try {
         const [result] = await connection.query(`
-            INSERT INTO mascotas (usuario_id, nombre, especie_id, fecha_nacimiento)
-            VALUES (?, ?, ?, ?)
-        `, [usuario_id, nombre, especie_id, fecha_nacimiento]);
+            INSERT INTO mascotas (usuario_id, nombre, especie_id, fecha_nacimiento, sexo)
+            VALUES (?, ?, ?, ?, ?)
+        `, [usuario_id, nombre, especie_id, fecha_nacimiento, sexo]);
 
-        res.status(201).json({ id: result.insertId, usuario_id, nombre, especie_id, fecha_nacimiento });
+        res.status(201).json({ id: result.insertId, usuario_id, nombre, especie_id, fecha_nacimiento, sexo });
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
