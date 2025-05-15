@@ -2,8 +2,23 @@ const connection = require('../db/connection');
 
 exports.getAllCitas = async (req, res) => {
     try {
-        const [rows] = await connection.query('SELECT * FROM citas');
-        res.json(rows);
+        const [rows] = await connection.query(`
+            SELECT c.id, c.fecha_hora,
+                   JSON_OBJECT('id', u.id, 'nombre', u.nombre) AS usuario,
+                   JSON_OBJECT('id', m.id, 'nombre', m.nombre) AS mascota,
+                   JSON_OBJECT('id', s.id, 'nombre', s.nombre) AS servicio
+            FROM citas c
+            JOIN usuarios u ON c.usuario_id = u.id
+            JOIN mascotas m ON c.mascota_id = m.id
+            JOIN servicios s ON c.servicio_id = s.id
+        `);
+        const citas = rows.map(row => ({
+            ...row,
+            usuario: JSON.parse(row.usuario),
+            mascota: JSON.parse(row.mascota),
+            servicio: JSON.parse(row.servicio)
+        }));
+        res.json(citas);
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
@@ -13,8 +28,25 @@ exports.getCitaById = async (req, res) => {
     const { id } = req.params;
 
     try {
-        const [rows] = await connection.query('SELECT * FROM citas WHERE id = ?', [id]);
-        res.json(rows[0]);
+        const [rows] = await connection.query(`
+            SELECT c.id, c.fecha_hora,
+                   JSON_OBJECT('id', u.id, 'nombre', u.nombre) AS usuario,
+                   JSON_OBJECT('id', m.id, 'nombre', m.nombre) AS mascota,
+                   JSON_OBJECT('id', s.id, 'nombre', s.nombre) AS servicio
+            FROM citas c
+            JOIN usuarios u ON c.usuario_id = u.id
+            JOIN mascotas m ON c.mascota_id = m.id
+            JOIN servicios s ON c.servicio_id = s.id
+            WHERE c.id = ?
+        `, [id]);
+        if (!rows[0]) return res.status(404).json({ message: 'Registro no encontrado' });
+        const cita = {
+            ...rows[0],
+            usuario: JSON.parse(rows[0].usuario),
+            mascota: JSON.parse(rows[0].mascota),
+            servicio: JSON.parse(rows[0].servicio)
+        };
+        res.json(cita);
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
