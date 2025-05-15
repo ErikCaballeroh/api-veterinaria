@@ -8,5 +8,6 @@ router.get('/:id', mascotasController.getMascotaById);
 router.post('/', mascotasController.createMascota);
 router.put('/:id', mascotasController.updateMascota);
 router.delete('/:id', mascotasController.deleteMascota);
+router.get('/usuario/:usuario_id', mascotasController.getMascotasByUsuario);
 
 module.exports = router;

@@ -119,3 +119,35 @@ exports.deleteMascota = async (req, res) => {
         res.status(500).json({ error: err.message });
     }
 }
+
+exports.getMascotasByUsuario = async (req, res) => {
+    const { usuario_id } = req.params;
+    try {
+        const [rows] = await connection.query(`
+            SELECT m.*, e.id AS especie_id, e.nombre AS especie_nombre, u.id AS usuario_id, u.nombre AS usuario_nombre
+            FROM mascotas m
+            LEFT JOIN especies e ON m.especie_id = e.id
+            LEFT JOIN usuarios u ON m.usuario_id = u.id
+            WHERE m.usuario_id = ?
+        `, [usuario_id]);
+
+        const mascotas = rows.map(mascota => ({
+            id: mascota.id,
+            usuario: {
+                id: mascota.usuario_id,
+                nombre: mascota.usuario_nombre,
+            },
+            nombre: mascota.nombre,
+            especie: {
+                id: mascota.especie_id,
+                nombre: mascota.especie_nombre,
+            },
+            sexo: mascota.sexo,
+            fecha_nacimiento: mascota.fecha_nacimiento,
+        }));
+
+        res.json(mascotas);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+}
