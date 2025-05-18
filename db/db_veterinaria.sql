@@ -33,11 +33,11 @@ CREATE TABLE `mascotas` (
     `id` BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     `usuario_id` BIGINT NOT NULL,
     `nombre` VARCHAR(255) NOT NULL,
-    `especie_id` BIGINT NOT NULL,
+    `especie_id` BIGINT,
     `sexo` ENUM('Macho','Hembra'),
     `fecha_nacimiento` DATE NOT NULL,
     FOREIGN KEY (`usuario_id`) REFERENCES `usuarios`(`id`) ON DELETE CASCADE ON UPDATE RESTRICT,
-    FOREIGN KEY (`especie_id`) REFERENCES `especies`(`id`) ON DELETE RESTRICT ON UPDATE RESTRICT
+    FOREIGN KEY (`especie_id`) REFERENCES `especies`(`id`) ON DELETE SET NULL ON UPDATE RESTRICT
 ) ENGINE=InnoDB;
 
 -- Tabla categorias
@@ -59,12 +59,12 @@ CREATE TABLE `servicios` (
 CREATE TABLE `consultas` (
     `id` BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     `usuario_id` BIGINT NOT NULL,
-    `mascota_id` BIGINT NOT NULL,
+    `mascota_id` BIGINT,
     `nota` TEXT NOT NULL,
     `fecha_hora` DATETIME NOT NULL,
     `servicio_id` BIGINT NOT NULL,
     FOREIGN KEY (`usuario_id`) REFERENCES `usuarios`(`id`) ON DELETE CASCADE ON UPDATE RESTRICT,
-    FOREIGN KEY (`mascota_id`) REFERENCES `mascotas`(`id`) ON DELETE CASCADE ON UPDATE RESTRICT,
+    FOREIGN KEY (`mascota_id`) REFERENCES `mascotas`(`id`) ON DELETE SET NULL ON UPDATE RESTRICT,
     FOREIGN KEY (`servicio_id`) REFERENCES `servicios`(`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
@@ -72,11 +72,11 @@ CREATE TABLE `consultas` (
 CREATE TABLE `citas` (
     `id` BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     `usuario_id` BIGINT NOT NULL,
-    `mascota_id` BIGINT NOT NULL,
+    `mascota_id` BIGINT,
     `fecha_hora` DATETIME NOT NULL,
     `servicio_id` BIGINT,
     FOREIGN KEY (`usuario_id`) REFERENCES `usuarios`(`id`) ON DELETE CASCADE ON UPDATE RESTRICT,
-    FOREIGN KEY (`mascota_id`) REFERENCES `mascotas`(`id`) ON DELETE CASCADE ON UPDATE RESTRICT,
+    FOREIGN KEY (`mascota_id`) REFERENCES `mascotas`(`id`) ON DELETE SET NULL ON UPDATE RESTRICT,
     FOREIGN KEY (`servicio_id`) REFERENCES `servicios`(`id`) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 

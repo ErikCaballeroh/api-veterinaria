@@ -4,19 +4,20 @@ exports.getAllCitas = async (req, res) => {
     try {
         const [rows] = await connection.query(`
             SELECT c.id, c.fecha_hora,
-                   JSON_OBJECT('id', u.id, 'nombre', u.nombre) AS usuario,
-                   JSON_OBJECT('id', m.id, 'nombre', m.nombre) AS mascota,
-                   JSON_OBJECT('id', s.id, 'nombre', s.nombre) AS servicio
+                   u.id AS usuario_id, u.nombre AS usuario_nombre,
+                   m.id AS mascota_id, m.nombre AS mascota_nombre,
+                   s.id AS servicio_id, s.nombre AS servicio_nombre
             FROM citas c
             JOIN usuarios u ON c.usuario_id = u.id
             JOIN mascotas m ON c.mascota_id = m.id
             JOIN servicios s ON c.servicio_id = s.id
         `);
         const citas = rows.map(row => ({
-            ...row,
-            usuario: JSON.parse(row.usuario),
-            mascota: JSON.parse(row.mascota),
-            servicio: JSON.parse(row.servicio)
+            id: row.id,
+            fecha_hora: row.fecha_hora,
+            usuario: { id: row.usuario_id, nombre: row.usuario_nombre },
+            mascota: { id: row.mascota_id, nombre: row.mascota_nombre },
+            servicio: { id: row.servicio_id, nombre: row.servicio_nombre }
         }));
         res.json(citas);
     } catch (err) {
@@ -30,9 +31,9 @@ exports.getCitaById = async (req, res) => {
     try {
         const [rows] = await connection.query(`
             SELECT c.id, c.fecha_hora,
-                   JSON_OBJECT('id', u.id, 'nombre', u.nombre) AS usuario,
-                   JSON_OBJECT('id', m.id, 'nombre', m.nombre) AS mascota,
-                   JSON_OBJECT('id', s.id, 'nombre', s.nombre) AS servicio
+                   u.id AS usuario_id, u.nombre AS usuario_nombre,
+                   m.id AS mascota_id, m.nombre AS mascota_nombre,
+                   s.id AS servicio_id, s.nombre AS servicio_nombre
             FROM citas c
             JOIN usuarios u ON c.usuario_id = u.id
             JOIN mascotas m ON c.mascota_id = m.id
@@ -41,10 +42,11 @@ exports.getCitaById = async (req, res) => {
         `, [id]);
         if (!rows[0]) return res.status(404).json({ message: 'Registro no encontrado' });
         const cita = {
-            ...rows[0],
-            usuario: JSON.parse(rows[0].usuario),
-            mascota: JSON.parse(rows[0].mascota),
-            servicio: JSON.parse(rows[0].servicio)
+            id: rows[0].id,
+            fecha_hora: rows[0].fecha_hora,
+            usuario: { id: rows[0].usuario_id, nombre: rows[0].usuario_nombre },
+            mascota: { id: rows[0].mascota_id, nombre: rows[0].mascota_nombre },
+            servicio: { id: rows[0].servicio_id, nombre: rows[0].servicio_nombre }
         };
         res.json(cita);
     } catch (err) {
